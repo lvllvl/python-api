@@ -13,9 +13,9 @@ This project implements parallel algorithms using CUDA C.
 - [ ] Frontend
     - [ ] #TODO:
 - [ ] CUDA Parallel Processing
-    - #TODO: #3 function: color to grayscale
-    - #TODO: #4 function: image blurring
+    - [ ] #TODO: #3 function: color to grayscale
+    - [ ] #TODO: #4 function: image blurring
 - [ ] API  
-    - #TODO: #1 Write basic hello world api & test it using curl
+    - [ ] #TODO: #1 Write basic hello world api & test it using curl
 - [ ] Unit Testing 
-    - #TODO: #5 Add robust testing in every part of this project 
+    - [ ] #TODO: #5 Add robust testing in every part of this project 
