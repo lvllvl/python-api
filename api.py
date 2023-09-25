@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# ... (previous code for image upload)
-
 # Define a route for a basic GET request
 @app.route('/hello', methods=['GET'])
 def hello_world():
