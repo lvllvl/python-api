@@ -26,6 +26,7 @@ This project implements parallel algorithms using CUDA C.
 
 ## Folder Structure
 
+```
 project_root/
 │
 ├── api/               (API-related files)
@@ -60,3 +61,5 @@ project_root/
 ├── .gitignore          (Git ignore file)
 │
 └── README.md           (Project README and documentation)
+
+```
