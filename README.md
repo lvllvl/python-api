@@ -18,4 +18,5 @@ This project implements parallel algorithms using CUDA C.
 - [ ] API  
     - [ ] #TODO: #1 Write basic hello world api & test it using curl
 - [ ] Unit Testing 
-    - [ ] #TODO: #5 Add robust testing in every part of this project 
+    - [ ] #TODO: #5 Add robust testing in every part of this project
+    - [ ] #TODO: #6 Use GitHub Actions (CI / CD ) to incorporate testing 
