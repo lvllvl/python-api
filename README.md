@@ -8,7 +8,6 @@ This project implements parallel algorithms using CUDA C.
 
 ## TODO
 
-- [ ] Python API with Flask
-- [x] Task 1
-- [ ] Task 2
-- [ ] Task 3
+- [ ] #TODO: Python API with Flask
+    - [ ] API to connect frontend to CUDA image processing functions, e.g., colorToGrayscale, imageBlur 
+- [ ] #TODO: Front-end   
