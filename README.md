@@ -11,7 +11,7 @@ This project implements parallel algorithms using CUDA C.
 - [ ] Backend 
     - [ ] #TODO: #2 API to connect frontend to CUDA image processing functions, e.g., colorToGrayscale, imageBlur
 - [ ] Frontend
-    - [ ] #TODO:
+    - [x] Decide on a frontend  
 - [ ] CUDA Parallel Processing
     - [ ] #TODO: #3 function: color to grayscale
     - [ ] #TODO: #4 function: image blurring
