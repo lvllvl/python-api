@@ -1,4 +1,5 @@
 from cuda.colorToGrayscale import colorToGrayscaleConvertion
+from cuda.imageBlur import imageBlur
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from PIL import Image
@@ -51,17 +52,22 @@ def process_with_cuda(image_path, processing_type):
     blocks_per_grid_y = int( height / threads_per_block[1])
     blocks_per_grid = (blocks_per_grid_x, blocks_per_grid_y)
 
-    # Launch the CUDA kernel
+        # Launch the CUDA kernel
     if processing_type == 'color-to-grayscale':
-        colorToGrayscaleConvertion[blocks_per_grid, threads_per_block]( pout_device, pin_device, width, height)
-
-    # Copy the processed data back to the host
-    grayscale_image_data = pout_device.copy_to_host().reshape(height, width) 
-
-    # Convert the processed data back to an image
-    grayscale_image = Image.fromarray(grayscale_image_data, 'L')  # 'L' mode is for grayscale
+        colorToGrayscaleConvertion[blocks_per_grid, threads_per_block](pout_device, pin_device, width, height)
+        # Copy the processed data back to the host
+        processed_image_data = pout_device.copy_to_host().reshape(height, width)
+        # Convert the processed data back to an image
+        processed_image = Image.fromarray(processed_image_data, 'L')  # 'L' mode is for grayscale
+    elif processing_type == 'image-blur':
+        imageBlur[blocks_per_grid, threads_per_block](pout_device, pin_device, width, height)
+        # Copy the processed data back to the host
+        processed_image_data = pout_device.copy_to_host().reshape(height, width, 3)  # 3 channels for RGB
+        # Convert the processed data back to an image
+        processed_image = Image.fromarray(processed_image_data, 'RGB')  # 'RGB' mode for colored image
+    
     processed_image_path = os.path.join(UPLOAD_FOLDER, "processed_image.png")
-    grayscale_image.save(processed_image_path)
+    processed_image.save(processed_image_path)
     
     return processed_image_path
 
