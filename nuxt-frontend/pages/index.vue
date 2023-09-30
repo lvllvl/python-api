@@ -1,5 +1,9 @@
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+
+  <!-- Hidden Image Input -->
+  <input type="file" ref="imageInput" style="display: none;" value="../../data/image_portrait.png" />
+
     
     <!-- Title -->
     <h1 class="text-4xl font-bold mb-8">Parallel Image Processing</h1>
@@ -34,14 +38,41 @@
 export default {
   data() {
     return {
+      preloadedImageBase64; null,
       processedImage: null
     }
   },
+  mounted() {
+    // Convert the preloaded image to base64
+    this.convertImageToBase64('../../data/image_portrait.png');
+  },
   methods: {
-    async processImage(option) {
-      // Call the Flask API with the selected option
-      // Update the `processedImage` data property with the returned image path
-    }
+  async convertImageToBase64(){
+    imagePath = '../../data/image_portrait.png';
+    let response = await fetch( imagePath );
+    let blob = await response.blob();
+    let reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => {
+      this.preloadedImageBase64 = reader.result;
+    };
+    },
+  async processImage(option) {
+  try {
+    let formData = new FormData();
+    formData.append('imageData', this.preloadedImageBase64);
+    formData.append('type', option);
+
+    let response = await this.$axios.post('http://localhost:5000/process_image', formData);
+    
+    // Update the processedImage data property with the returned image path
+    this.processedImage = URL.createObjectURL(response.data);
+
+  } catch (error) {
+    console.error("Error processing the image:", error);
+  }
+}
+
   }
 }
 </script>
