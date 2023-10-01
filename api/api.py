@@ -1,9 +1,9 @@
+from flask_cors import CORS
 import sys
 sys.path.append('.')
 from cudas.colorToGrayscale import colorToGrayscaleConvertion
 from cudas.imageBlur import imageBlur
 from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from PIL import Image
 import os
@@ -12,14 +12,17 @@ from io import BytesIO
 import numpy as np
 import math
 from numba import cuda
+import logging
 
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists( UPLOAD_FOLDER ):
     os.makedirs( UPLOAD_FOLDER )
 
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-CORS(app) # Handling CORS for dev purposes only
+# CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"]}})
+CORS( app ) # Allow CORS for all domains on all routes
 
 @app.route('/process_image', methods=['POST'])
 def process_image():
@@ -46,11 +49,14 @@ def process_image():
 def process_with_cuda(image_path, processing_type):
     # Load image and prepare data
     image_data = image_to_rgb_array(image_path)
-    height, width = image_data.shape[ 0 ] // 3, image_data.shape[ 1 ] # Assuming a flattened 1d array
+    height, width, channels = image_data.shape # get height, width and channels for the image directly
+
+    # Flatten the image dat for GPU processing
+    flattened_image_data = image_data.flatten()
 
     # Allocate device memory and copy data to device
-    pin_device = cuda.to_device(image_data)
-    pout_device = cuda.device_array((height * width,), dtype=np.uint8)
+    pin_device = cuda.to_device(flattened_image_data)
+    pout_device = cuda.device_array((height * width * channels,), dtype=np.uint8) # allocate memory for the output image
     
     # Define block and grid dimensions
     threads_per_block = (16, 16)
@@ -88,8 +94,8 @@ def image_to_rgb_array(image_path):
     if image_np.shape[2] == 4:
         image_np = image_np[:, :, :3]
 
-    # Flatten the array to 1D and return it
-    return image_np.flatten()
+    # rleturn it
+    return image_np
 
 # Define a route for a basic GET request
 @app.route('/hello', methods=['GET'])
@@ -107,5 +113,14 @@ def echo():
         app.logger.error(f"Error processing request: {e}")
         return jsonify({"error": str(e)}), 400
 
+@app.route('/test', methods=['GET'])
+def test_endpoint():
+    return jsonify({"message": "Hello, World from Flask!"})
+
+@app.route('/test', methods=['OPTIONS'])
+def options_for_test():
+    return jsonify({}), 200
+
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)

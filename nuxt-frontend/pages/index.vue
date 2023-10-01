@@ -52,6 +52,13 @@
       >
         Image Blur
       </button>
+
+      <button
+        @click="testApi"
+        class="bg-blue-500 text-white py-2 px-4 rounded mr-4 hover:bg-blue-600"
+      >
+        Test API
+      </button>
     </div>
   </div>
 </template>
@@ -71,34 +78,46 @@ export default {
   },
   methods: {
     handleImageUpload(event) {
-    let file = event.target.files[0];
-    if (!file) return;
+      let file = event.target.files[0];
+      if (!file) return;
 
-    // Check for file type
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-      alert("Only JPEG, PNG images are supported.");
-      return;
-    }
+      // Check for file type
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        alert("Only JPEG, PNG images are supported.");
+        return;
+      }
 
-    // Check for file size (e.g., max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert("The uploaded image is too large. Please choose an image less than 5MB.");
-      return;
-    }
+      // Check for file size (e.g., max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert(
+          "The uploaded image is too large. Please choose an image less than 5MB."
+        );
+        return;
+      }
 
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      this.preloadedImageBase64 = e.target.result;
-      alert("Image uploaded successfully!");
-    };
-    reader.onerror = () => {
-      alert("There was an error uploading your image. Please try again.");
-    };
-    reader.readAsDataURL(file);
-  },
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        this.preloadedImageBase64 = e.target.result;
+        alert("Image uploaded successfully!");
+      };
+      reader.onerror = () => {
+        alert("There was an error uploading your image. Please try again.");
+      };
+      reader.readAsDataURL(file);
+    },
+
+    async testApi() {
+      try {
+        let response = await this.$axios.get("http://localhost:5001/test");
+        console.log(response.data);
+        alert( response.data.message);
+      } catch (error) {
+        console.error("Error calling the test API:", error);
+      }
+    },
 
     async convertImageToBase64() {
-      imagePath = "/data/image_portrait.png";
+      let imagePath = "/data/image_portrait.png";
       let response = await fetch(imagePath);
       let blob = await response.blob();
       let reader = new FileReader();
@@ -108,34 +127,33 @@ export default {
       };
     },
     async processImage(option) {
-  try {
-    let imageToProcess = this.preloadedImageBase64
-      ? this.preloadedImageBase64
-      : this.defaultImage;
+      try {
+        let imageToProcess = this.preloadedImageBase64
+          ? this.preloadedImageBase64
+          : this.defaultImage;
 
-    if (!imageToProcess) {
-      alert("Please upload an image first.");
-      return;
-    }
+        if (!imageToProcess) {
+          alert("Please upload an image first.");
+          return;
+        }
 
-    let formData = new FormData();
-    formData.append("imageData", imageToProcess);
-    formData.append("type", option);
+        let formData = new FormData();
+        formData.append("imageData", imageToProcess);
+        formData.append("type", option);
 
-    let response = await this.$axios.post(
-      "http://localhost:5000/process_image",
-      formData
-    );
+        let response = await this.$axios.post(
+          "http://localhost:5001/process_image",
+          formData
+        );
 
-    // Update the processedImage data property with the returned image path
-    this.processedImage = URL.createObjectURL(response.data);
-    alert("Image processed successfully!");
-  } catch (error) {
-    console.error("Error processing the image:", error);
-    alert("There was an error processing your image. Please try again.");
-  }
-},
-
+        // Update the processedImage data property with the returned image path
+        this.processedImage = URL.createObjectURL(response.data);
+        alert("Image processed successfully!");
+      } catch (error) {
+        console.error("Error processing the image:", error);
+        alert("There was an error processing your image. Please try again.");
+      }
+    },
   },
 };
 </script>
