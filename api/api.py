@@ -1,7 +1,8 @@
-from cuda.colorToGrayscale import colorToGrayscaleConvertion
-from cuda.imageBlur import imageBlur
+from ..cuda.colorToGrayscale import colorToGrayscaleConvertion
+from ..cuda.imageBlur import imageBlur
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 from PIL import Image
 import os
 import base64
@@ -9,12 +10,13 @@ from io import BytesIO
 import numpy as np
 import math
 
-app = Flask(__name__)
-CORS(app) # Handling CORS for dev purposes only
-
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists( UPLOAD_FOLDER ):
     os.makedirs( UPLOAD_FOLDER )
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+CORS(app) # Handling CORS for dev purposes only
 
 @app.route('/process_image', methods=['POST'])
 def process_image():

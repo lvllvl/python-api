@@ -38,7 +38,7 @@
 export default {
   data() {
     return {
-      preloadedImageBase64; null,
+      preloadedImageBase64: null,
       processedImage: null
     }
   },
