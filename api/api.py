@@ -1,5 +1,7 @@
-from ..cuda.colorToGrayscale import colorToGrayscaleConvertion
-from ..cuda.imageBlur import imageBlur
+import sys
+sys.path.append('.')
+from cudas.colorToGrayscale import colorToGrayscaleConvertion
+from cudas.imageBlur import imageBlur
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -9,6 +11,7 @@ import base64
 from io import BytesIO
 import numpy as np
 import math
+from numba import cuda
 
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists( UPLOAD_FOLDER ):
@@ -37,6 +40,7 @@ def process_image():
         return send_from_directory(UPLOAD_FOLDER, processed_image_path)
 
     except Exception as e:
+        app.logger.error(f"Error processing image: {e}")
         return jsonify({"error": str(e)}), 400
 
 def process_with_cuda(image_path, processing_type):
@@ -74,19 +78,6 @@ def process_with_cuda(image_path, processing_type):
     return processed_image_path
 
 
-# def process_with_cuda( image_path, processing_type ):
-#     if processing_type == 'color-to-grayscale':
-#         # call the CUDA python function for grayscale conversion
-#         processed_image_path = colorToGrayscaleConvertion( image_path )
-#     elif processing_type == 'image-blur':
-#         # call the CUDA python function for image blur
-#         processed_image_path = imageBlur( image_path )
-#     else:
-#         # unexpected processing type
-#         raise Exception("Unexpected processing type: {}".format(processing_type))
-
-#     return image_path
-
 def image_to_rgb_array(image_path):
     # Open the image and convert it to RGB mode
     image = Image.open(image_path).convert('RGB')
@@ -113,6 +104,7 @@ def echo():
         data = request.get_json()
         return jsonify(data)
     except Exception as e:
+        app.logger.error(f"Error processing request: {e}")
         return jsonify({"error": str(e)}), 400
 
 if __name__ == '__main__':
