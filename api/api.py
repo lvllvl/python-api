@@ -14,6 +14,7 @@ import math
 from numba import cuda
 import logging
 
+print( "SYSTEM.PATH == ", sys.path )  
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists( UPLOAD_FOLDER ):
     os.makedirs( UPLOAD_FOLDER )
@@ -123,4 +124,5 @@ def options_for_test():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    port = int( os.environ.get( "PORT", 5000 )) # Use PORT if it's there
+    app.run( debug=True, host='0.0.0.0', port=port )
