@@ -25,6 +25,15 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"]}})
 CORS( app ) # Allow CORS for all domains on all routes
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    file_to_serve = 'index.html'
+    if path != "" and os.path.exists( os.path.join( 'static', path )):
+        file_to_serve = path
+    return send_from_directory( 'static', file_to_serve )
+
+
 @app.route('/process_image', methods=['POST'])
 def process_image():
     try:
