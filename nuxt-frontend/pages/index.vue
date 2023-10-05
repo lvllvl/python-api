@@ -108,7 +108,7 @@ export default {
 
     async testApi() {
       try {
-        let response = await this.$axios.get("http://localhost:5001/test");
+        let response = await this.$axios.get("api/test");
         console.log(response.data);
         alert( response.data.message);
       } catch (error) {
