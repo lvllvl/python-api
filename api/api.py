@@ -21,7 +21,7 @@ if not os.path.exists( UPLOAD_FOLDER ):
     os.makedirs( UPLOAD_FOLDER )
 
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder='../dist')
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"]}})
