@@ -4,6 +4,7 @@ sys.path.append('.')
 from cudas.colorToGrayscale import colorToGrayscaleConvertion
 from cudas.imageBlur import imageBlur
 from flask import Flask, request, jsonify, send_from_directory
+from werkzeug import urls
 from werkzeug.utils import secure_filename
 from PIL import Image
 import os
