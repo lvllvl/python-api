@@ -129,10 +129,6 @@ def echo():
 def test_endpoint():
     return jsonify({"message": "Hello, World from Flask!"})
 
-@app.route('/test', methods=['OPTIONS'])
-def options_for_test():
-    return jsonify({}), 200
-
 
 if __name__ == '__main__':
     port = int( os.environ.get( "PORT", 5000 )) # Use PORT if it's there
