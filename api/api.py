@@ -25,16 +25,6 @@ app = Flask(__name__, static_folder='../dist')
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 CORS(app, resources={r"/*": {"origins": "*"}})
-# CORS( app ) # Allow CORS for all domains on all routes
-
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/process_image', methods=['POST'])
 def process_image():
@@ -127,8 +117,17 @@ def echo():
 
 @app.route('/test', methods=['GET'])
 def test_endpoint():
+    app.logger.info("Test endpoint called")
     return jsonify({"message": "Hello, World from Flask!"})
 
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     port = int( os.environ.get( "PORT", 5000 )) # Use PORT if it's there
