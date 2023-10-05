@@ -24,8 +24,8 @@ logging.basicConfig(filename='app.log', level=logging.DEBUG)
 app = Flask(__name__, static_folder='../dist')
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"]}})
-CORS( app ) # Allow CORS for all domains on all routes
+CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS( app ) # Allow CORS for all domains on all routes
 
 
 @app.route('/', defaults={'path': ''})
