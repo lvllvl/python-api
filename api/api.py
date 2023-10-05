@@ -120,6 +120,9 @@ def test_endpoint():
     app.logger.info("Test endpoint called")
     return jsonify({"message": "Hello, World from Flask!"})
 
+@app.route('/api/test', methods=['GET'])
+def api_test_endpoint():
+    return jsonify({"message": "Hello, World from API Test Endpoint!"})
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

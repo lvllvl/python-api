@@ -108,7 +108,7 @@ export default {
 
     async testApi() {
       try {
-        let response = await this.$axios.get("api/test");
+        let response = await this.$axios.get("/test");
         console.log(response.data);
         alert( response.data.message);
       } catch (error) {
